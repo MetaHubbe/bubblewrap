@@ -26,6 +26,7 @@ const DOWNLOAD_JDK_SRC_ROOT = 'https://github.com/adoptium/jdk17u/archive/refs/t
 const JDK_BIN_VERSION = JDK_VERSION.replace('+', '_');
 const JDK_FILE_NAME_MAC = `OpenJDK17U-jdk_x64_mac_hotspot_${JDK_BIN_VERSION}.tar.gz`;
 const JDK_FILE_NAME_WIN32 = `OpenJDK17U-jdk_x86-32_windows_hotspot_${JDK_BIN_VERSION}.zip`;
+const JDK_FILE_NAME_WIN64 = `OpenJDK17U-jdk_x64_windows_hotspot_${JDK_BIN_VERSION}.zip`;
 const JDK_FILE_NAME_LINUX64 = `OpenJDK17U-jdk_x64_linux_hotspot_${JDK_BIN_VERSION}.tar.gz`;
 const JDK_SRC_ZIP = `jdk-${JDK_VERSION}.zip`;
 const JDK_SOURCE_SIZE = 178978050;
@@ -53,7 +54,11 @@ export class JdkInstaller {
     this.joinPath = path.posix.join;
     switch (process.platform) {
       case 'win32': {
-        this.downloadFile = JDK_FILE_NAME_WIN32;
+        if (process.arch === 'x64') {
+          this.downloadFile = JDK_FILE_NAME_WIN64;
+        } else {
+          this.downloadFile = JDK_FILE_NAME_WIN32;
+        }
         this.unzipFunction = util.unzipFile;
         this.joinPath = path.win32.join;
         break;
